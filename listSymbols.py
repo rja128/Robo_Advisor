@@ -1,11 +1,8 @@
 import os
 import pickle
 import pandas as pd
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Float
-from sqlalchemy.orm import sessionmaker, scoped_session
-import pymysql.cursors
-from connectSQL import ConnectSQL 
+import modules as mod
+import pymysql.cursors 
 
 ##List of Functions
 #    listSymbols()
@@ -22,8 +19,7 @@ class ListSymbols():
          self.IPOyear = IPOyear
          self.max = max
          self.min = min
-##       self.engine = ConnectSQL('test_user', 'password', 'stocks_test')
-         self.engine = create_engine('mysql+pymysql://test_user:password@localhost/stocks_test', echo=True, pool_recycle=3600)
+         self.engine = mod.engine('test_user', 'password', 'stocks_test')
 
     ##Method to load list of symbols
     def listSymbols(self):
@@ -94,10 +90,10 @@ class ListSymbols():
 
 ##Test Runs
  
-##test = ListSymbols(sector='Health Care', exchange='AMEX')
+#test = ListSymbols(sector='Health Care', exchange='AMEX')
 
-##test.list()
-##print(test.count())
+#test.list()
+#print(test.count())
 
 
 

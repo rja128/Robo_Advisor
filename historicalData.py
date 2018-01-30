@@ -4,10 +4,8 @@ from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.alphavantage import AlphaVantage
 import pandas as pd
 import pandas_datareader.data as web
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Float
-from sqlalchemy.orm import sessionmaker, scoped_session
 from listSymbols import ListSymbols
+import modules as mod
 import end as end
 
 ##List of Functions
@@ -21,7 +19,7 @@ import end as end
 class HistoricalData():
 
     def __init__(self, user='test_user', password='password', sqlServer='localhost', database='stocks_test'):
-        self.engine = create_engine('mysql+pymysql://{}:{}@{}/{}'.format(user, password, sqlServer, database), echo=True, pool_recycle=3600)
+        self.engine = mod.engine(user, password, database, sqlServer)
         self.ts = TimeSeries(key='XYI5EZUJ5CS5BI3E', output_format='pandas', retries=5)
 
     def historicalMin(self, tickers):
@@ -146,12 +144,12 @@ class HistoricalData():
         print("Amount Skipped - ", skipped)
 
 ##Test Runs
-#symbols = ListSymbols(sector='Health Care', exchange='AMEX')
-#tickers = symbols.listSymbols()
-#count = symbols.count()
+symbols = ListSymbols(sector='Health Care', exchange='AMEX')
+tickers = symbols.listSymbols()
+count = symbols.count()
 
-#HistoricalData(database='stocks_test_daily').historicalDaily(tickers)
-##HistoricalData().historical30Min(tickers)
+HistoricalData(database='stocks_test_daily').historicalDaily(tickers)
+#HistoricalData().historical30Min(tickers)
 
 
 
