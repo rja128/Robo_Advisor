@@ -34,7 +34,7 @@ def symbols_to_Database():
     symbolCSVs()
      
     ##Connect to MYSQL Database
-    engine = create_engine('mysql+pymysql://test_user:password@localhost/stocks_test', echo=True, pool_recycle=3600)
+    engine = create_engine('mysql+pymysql://test_user:password@localhost/Symbols', echo=True, pool_recycle=3600)
 
     ##Save CSVs to Dataframes
     dfNYSE = pd.read_csv('Stock_Data/Lists/NYSE_stocks.csv')

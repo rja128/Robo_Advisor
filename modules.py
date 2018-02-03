@@ -1,12 +1,21 @@
 import os
+import pickle
+import requests
+import urllib.request
+import datetime as dt
+import csv
 import json
-import flatten_json as fl
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Float
-from sqlalchemy.orm import sessionmaker, scoped_session
+import modules as mod
+from streamingData import StreamingData
 from alpha_vantage.timeseries import TimeSeries
 import pandas as pd
 import pandas_datareader.data as web
+from sqlalchemy import create_engine
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Float
+from sqlalchemy.orm import sessionmaker, scoped_session
+import sys
+sys.path.insert(0, '/home/epimetheus/Programming/Python/TradeKingApi')
+import TradeKingAPI as api
 
 def formatResponse(response):
     ##Content from the response format bytes
@@ -25,7 +34,22 @@ def printJSON(jsonDict):
 
     print(prettyJSON)
 
-def engine(user, password, database, sqlServer = 'localhost'):
+def delAllTables(engine):
+    dfListTables = pd.read_sql('show tables', engine)
+
+    for tables in dfListTables.Tables_in_stocks_test:
+        connection = engine.connect() 
+        result = connection.execute('DROP TABLE `{}`;'.format(tables))
+        connection.close()
+
+def indexDatetime(df):
+    dfTest = df.index
+    df.index = pd.to_datetime(dfTest)
+    df.index.dtype
+
+    return df
+
+def engine(database, user='test_user', password='password', sqlServer = 'localhost'):
     if isinstance(sqlServer, str):
         sqlServer = sqlServer
     else:
@@ -33,6 +57,19 @@ def engine(user, password, database, sqlServer = 'localhost'):
 
     engine = create_engine('mysql+pymysql://{}:{}@{}/{}'.format(user, password, sqlServer, database), echo=True, pool_recycle=3600)
     return engine
+
+def addNoDuplicates(table, dfNew, engine):
+
+     dfNew.to_sql('myTempTable', engine, if_exists ='replace')
+
+     connection = engine.connect() 
+     result = connection.execute('INSERT IGNORE INTO {} SELECT * FROM myTempTable;'.format(table))
+     connection.close()
+
+    
+    
+    
+
 
 
 

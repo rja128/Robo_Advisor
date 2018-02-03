@@ -19,7 +19,7 @@ class ListSymbols():
          self.IPOyear = IPOyear
          self.max = max
          self.min = min
-         self.engine = mod.engine('test_user', 'password', 'stocks_test')
+         self.engine = mod.engine('Symbols', 'test_user', 'password')
 
     ##Method to load list of symbols
     def listSymbols(self):
