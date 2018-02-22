@@ -37,8 +37,18 @@ def printJSON(jsonDict):
 def delAllTables(engine):
     dfListTables = pd.read_sql('show tables', engine)
 
-    for tables in dfListTables.Tables_in_stocks_test:
-        connection = engine.connect() 
+    print(dfListTables)
+
+    if dfListTables.empty:
+        return None
+
+    for tables in dfListTables.ix[:,0]:
+        print(tables)
+
+        if "Tables_in" in tables:
+            continue 
+
+        connection = engine.connect()
         result = connection.execute('DROP TABLE `{}`;'.format(tables))
         connection.close()
 
@@ -63,7 +73,7 @@ def addNoDuplicates(table, dfNew, engine):
      dfNew.to_sql('myTempTable', engine, if_exists ='replace')
 
      connection = engine.connect() 
-     result = connection.execute('INSERT IGNORE INTO {} SELECT * FROM myTempTable;'.format(table))
+     connection.execute('INSERT IGNORE INTO {} SELECT * FROM myTempTable;'.format(table))
      connection.close()
 
     
